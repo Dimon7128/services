@@ -6,7 +6,7 @@
 !.gitignore
 !.myfuncs
 !*/
-!Dockerfile
+!dockerfile
 !*.tf
 !*.c
 !*.md
@@ -17,4 +17,6 @@
 !*.html
 !*.css
 !*Jenkinsfile
+!nginx.conf
+!requirements.txt
 

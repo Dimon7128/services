@@ -1,0 +1,15 @@
+# Use the Nginx stable alpine image as a base
+FROM nginx:stable-alpine
+
+# Remove the default Nginx configuration files
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy custom configuration file and static content
+COPY nginx.conf /etc/nginx/conf.d/
+COPY static.html /usr/share/nginx/html/
+
+# Make sure the Nginx user owns the static content directory
+RUN chown -R nginx:nginx /usr/share/nginx/html
+
+# Start Nginx in the foreground to play nicely with Docker
+CMD ["nginx", "-g", "daemon off;"]
