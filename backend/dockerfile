@@ -13,5 +13,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the content of the local src directory to the working directory
 COPY . .
 
-# Specify the command to run on container start
-CMD ["python", "backend_app.py"]
+# Use Gunicorn to serve the application. Adjust the number of workers as necessary.
+# The "backend_app:app" syntax specifies the module (backend_app) and application variable (app) to serve with Gunicorn.
+CMD ["gunicorn", "--bind", "0.0.0.0:12345", "--workers", "3", "backend_app:app"]
