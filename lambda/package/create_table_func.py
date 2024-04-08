@@ -10,22 +10,34 @@ def lambda_handler(event, context):
 
     try:
         conn = pymysql.connect(host=rds_host, user=name, passwd=password, db=db_name, connect_timeout=5)
+        with conn.cursor() as cur:
+            # Ensure the  single_value_table exists
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS single_value_table (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL
+                )
+            """)
+
+            # Insert a new value or update the existing one
+            cur.execute("""
+                INSERT INTO single_value_table (id, name)
+                VALUES (1, 'yossiBaliti')
+                ON DUPLICATE KEY UPDATE name = 'yossiBaliti'
+            """)
+            conn.commit()
     except pymysql.MySQLError as e:
         # Log error and return
+        print("MySQL Error:", e)
         return {
             "statusCode": 500,
-            "body": str(e)
+            "body": "Failed to create or update table: " + str(e)
         }
-
-    # Run query
-    with conn.cursor() as cur:
-        cur.execute("CREATE TABLE IF NOT EXISTS table_name (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255))")
-        conn.commit()
-
-    # Close connection
-    conn.close()
+    finally:
+        # Close connection
+        conn.close()
 
     return {
         "statusCode": 200,
-        "body": "Query executed successfully!"
+        "body": "Table checked/created and value inserted/updated successfully!"
     }
