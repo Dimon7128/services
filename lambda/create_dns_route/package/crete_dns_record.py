@@ -6,7 +6,7 @@ def lambda_handler(event, context):
     route53 = boto3.client('route53')
 
     # Use get to avoid KeyError if 'alb_dns_name' is not in the event
-    dns_name = event.get('alb_dns_name')
+    dns_name = os.environ.get('ALB_DNS_NAME')
     if dns_name is None:
         return {
             'statusCode': 400,
